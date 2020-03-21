@@ -1,19 +1,16 @@
 body {
-    margin : 0px;
-    padding: 0px;
+  margin: 0px;
+  padding: 0px;
 }
-
 main {
-    width: 1440px;
+  width: 1440px;
 }
-
 .e_shop {
-    width           : 100%;
-    margin          : 0 auto;
-    border          : 1px solid #000;
-    background-color: #eee;
+  width: 100%;
+  margin: 0 auto;
+  border: 1px solid #000;
+  background-color: #eee;
 }
-
 /* Стили для блока продукта */
 /*
 .product_box {
@@ -54,5 +51,4 @@ main {
     margin: 0 5px 0 5px;
 }
 */
-
 /* ================================== */

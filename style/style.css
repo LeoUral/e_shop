@@ -2,22 +2,56 @@ body {
   margin: 0px;
   padding: 0px;
 }
-main {
-  width: 1440px;
+main,
+header {
+  width: 100%;
 }
-.e_shop {
+.head_shop {
+  width: 100%;
+  min-height: 150px;
+  border: 1px solid #000;
+  background-color: #ccc;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+}
+.title_shop {
+  width: 80%;
+  padding: 10px;
+  border: 1px solid #000;
+  background-color: #a3c5db;
+  color: #000;
+}
+.head_js {
+  width: 20%;
+  padding: 10px;
+  border: 1px solid #000;
+  background-color: #81afda;
+}
+.e_shop_js {
   width: 100%;
   margin: 0 auto;
   border: 1px solid #000;
   background-color: #eee;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 /* Стили для блока продукта */
 /*
 .product_box {
-    width              : 100px;
-    height             : 200px;
+    width              : 200px;
+    height             : 250px;
+    margin             : 5px 10px;
     border             : 1px solid #000;
-    background-image   : url();
+    box-shadow         : 3px 3px 10px rgb(23, 79, 124);
     background-size    : cover;
     background-repeat  : no-repeat;
     background-color   : #ccc;
@@ -26,7 +60,9 @@ main {
 }
 
 .name_h2 {
-    text-align: center;
+    text-align : center;
+    color      : #fff;
+    text-shadow: 2px 2px 3px #000;
 }
 
 .name_h2>h2 {
@@ -34,14 +70,16 @@ main {
 }
 
 .price_bottom {
-    position: absolute;
-    bottom  : 5px;
-    left    : 35px;
+    width     : 100%;
+    position  : absolute;
+    bottom    : 5px;
+    text-align: center;
 }
 
 .price_bottom span {
     font-size  : 24px;
-    text-shadow: 3px 3px 3px#fff;
+    color      : #fff;
+    text-shadow: 2px 2px 3px #000;
 }
 
 .add_product,

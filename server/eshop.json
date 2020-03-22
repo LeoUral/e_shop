@@ -1,0 +1,31 @@
+[{
+        "id": 0,
+        "name": "Шляпа белая",
+        "urlImage": "../image/image_0.png",
+        "price": 3854
+    },
+    {
+        "id": 1,
+        "name": "Лис",
+        "urlImage": "../image/image_1.jpg",
+        "price": 1520
+    },
+    {
+        "id": 2,
+        "name": "Автомобиль",
+        "urlImage": "../image/image_2.jpg",
+        "price": 985000
+    },
+    {
+        "id": 3,
+        "name": "Прикид ПАНК",
+        "urlImage": "../image/image_3.jpg",
+        "price": 1520
+    },
+    {
+        "id": 4,
+        "name": "Шляпя черная",
+        "urlImage": "../image/image_4.jpg",
+        "price": 2400
+    }
+]

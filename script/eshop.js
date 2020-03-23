@@ -13,12 +13,14 @@ const productStyle = `
         background-color   : #ccc;
         background-position: center;
         position           : relative;
+        box-sizing         : border-box;
     }
     
     .name_h2 {
         text-align : center;
         color      : #fff;
         text-shadow: 2px 2px 3px #000;
+        box-sizing : border-box;
     }
     
     .name_h2>h2 {
@@ -47,13 +49,43 @@ const productStyle = `
     </style>
 `;
 
+const styleBasket = `
+    <style>
+    .block_basket {
+        width     : 100%;
+        margin    : 5px 0 0 0;
+        display   : flex;
+        border    : 1px solid #000;
+        box-sizing: border-box;
+    }
+    
+    .basket_img {
+        image-rendering    : auto;
+        width              : 250px;
+        height             : 300px;
+        background-size    : cover;
+        background-repeat  : no-repeat;
+        background-color   : #ccc;
+        background-position: center;
+        box-sizing         : border-box;
+    }
+    
+    .content_basket {
+        width     : 80%;
+        padding   : 20px;
+        box-sizing: border-box;
+    }
+    </style>
+`;
+
 //данные 
 const allData = {
-    dataProduct: [],
-    product: '',
-    headBasket: '',
-    countPrice: 0,
-    countQuantity: 0
+    dataProduct: [], //массив продукта
+    product: '', // верстка продукта
+    headBasket: '', //верстка корзиные в header
+    countPrice: 0, // сумма покупки
+    countQuantity: 0, //количество выбранного товара
+    blockBasket: '' //верстка блока корзины
 };
 
 let basket = []; //корзина
@@ -67,9 +99,10 @@ class View {
     constructor() {
         this.productStyle = productStyle
         this.product = allData.product;
+        this.styleBasket = styleBasket;
     }
 
-    //выводит на экран за ранее подготовленную верстку товаров и стили к ней
+    //выводит на экран заранее подготовленную верстку товаров и стили к ней
     showOnScreen(prod, style) {
         const prodAll = prod + style;
         const eShop = document.querySelector('.e_shop_js');
@@ -90,7 +123,7 @@ class View {
                 <h2>Ваши покупки</h2>
                 <div>Количество товара: ${allData.countQuantity} шт.</div>
                 <div>Выбранно на сумму: ${allData.countPrice} руб.</div>
-                <button>Посмотреть покупки</button>
+                <button class="btn_basket">Посмотреть покупки</button>
             </div>
         `;
         allData.headBasket = dataBasket;
@@ -114,10 +147,40 @@ class View {
             </div>
             `;
         }
-
         this.showOnScreen(allData.product, this.productStyle); //вывод на экран
-
     }
+
+    //формируем верстку блока корзины
+    runViewBasket() {
+        for (let i = 0; i < basket.length; i++) {
+            if (basket[i].quantity > 0) {
+                this.joinBlockBasket(basket, i);//верстка выбранных товаров
+            }
+        }
+        this.showOnScreen(allData.blockBasket, this.styleBasket);//вывод на экран
+    }
+
+    //верстка корзины, добавляем продукт
+    joinBlockBasket(data, i) {
+        allData.blockBasket = allData.blockBasket + `
+        <div class="block_basket">
+            <div class="basket_img" style="background-image: url(${data[i].urlImage});">                
+            </div>    
+            <div class="content_basket">
+                <h1> ${data[i].name} </h1>
+                <div class="basket_bottom">
+                    <button class="add_product" data-id=${data[i].id}>+</button>
+                    <span>${data[i].price}</span>        
+                    <button class="remove_product" data-id=${data[i].id}>-</button>
+                </div>
+                <div class="quantity_basket">
+                    Количество: ${data[i].quantity}
+                </div>
+            </div>
+        </div>
+        `;
+    }
+
 
 }
 
@@ -126,6 +189,7 @@ class Control {
 
     }
 
+    //смотрим нажатие кнопок + / -
     getClickAdd() {
         let btnAdd = document.querySelectorAll('.price_bottom');
         btnAdd.forEach(function (btn) {
@@ -138,7 +202,15 @@ class Control {
         });
     }
 
-    //меняем количество выбранног, удаленного товара из корзины
+    //нажатие просмотра покупок, выбор корзины
+    getClickBasket() {
+        let btnBascket = document.querySelector('.btn_basket');
+        btnBascket.addEventListener('click', () => {
+            view.runViewBasket()//рендерим блок корзины вместо блока товаров
+        })
+    }
+
+    //меняем количество выбранного, удаленного товара из корзины
     putBacket(id, btn) {
         id = +id;
         if (btn === 'add_product') {
@@ -148,6 +220,7 @@ class Control {
         }
         console.log(basket);
         this.countProduct();
+        this.getClickBasket();
 
     }
 
@@ -166,9 +239,7 @@ class Control {
     //создаем пустую корзину
     createBasket() {
         for (let i = 0; i < model.data.length; i++) {
-
             let dataBasket = { id: i, name: model.data[i].name, urlImage: model.data[i].urlImage, price: model.data[i].price, quantity: 0 };
-
             basket[i] = dataBasket;
         }
     }
@@ -178,10 +249,10 @@ class Control {
         allData.countQuantity = 0;
         allData.countPrice = 0;
         for (let i = 0; i < basket.length; i++) {
-            allData.countQuantity = allData.countQuantity + basket[i].quantity;
-            allData.countPrice = allData.countPrice + basket[i].quantity * basket[i].price;
+            allData.countQuantity = allData.countQuantity + basket[i].quantity;//количество
+            allData.countPrice = allData.countPrice + basket[i].quantity * basket[i].price;//стоимость итого
         }
-        view.joinBasket();
+        view.joinBasket();//верстка
     }
 
     init() {
@@ -195,7 +266,7 @@ class Model {
         this.data = [];
     }
 
-    //запрос данных из JSON
+    //запрос данных из JSON файла
     async _requestProduct() {
         const urlServer = "../server/eshop.json";
 
@@ -206,7 +277,7 @@ class Model {
         allData.dataProduct = this.data;
         console.log(this.data);
 
-        view.joinProduct(this.data);
+        view.joinProduct(this.data);//верстка
 
 
     }

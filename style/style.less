@@ -15,6 +15,7 @@ header {
     background-color: #ccc;
     display         : flex;
     flex-wrap       : nowrap;
+    box-sizing      : border-box;
 }
 
 .title_shop {
@@ -23,6 +24,7 @@ header {
     border          : 1px solid #000;
     background-color: rgb(163, 197, 219);
     color           : #000;
+    box-sizing      : border-box;
 }
 
 .head_js {
@@ -30,6 +32,7 @@ header {
     padding         : 10px;
     border          : 1px solid #000;
     background-color: rgb(129, 175, 218);
+    box-sizing      : border-box;
 }
 
 .e_shop_js {
@@ -40,8 +43,37 @@ header {
     display         : flex;
     flex-wrap       : wrap;
     justify-content : center;
+    box-sizing      : border-box;
 }
 
+/*Стили для блока корзины*/
+
+.block_basket {
+    width     : 100%;
+    margin    : 5px 0 0 0;
+    display   : flex;
+    border    : 1px solid #000;
+    box-sizing: border-box;
+}
+
+.basket_img {
+    image-rendering    : auto;
+    width              : 250px;
+    height             : 300px;
+    background-size    : cover;
+    background-repeat  : no-repeat;
+    background-color   : #ccc;
+    background-position: center;
+    box-sizing         : border-box;
+}
+
+.content_basket {
+    width     : 80%;
+    padding   : 20px;
+    box-sizing: border-box;
+}
+
+/*-----------------------------------------*/
 
 
 /* Стили для блока продукта */
@@ -57,12 +89,14 @@ header {
     background-color   : #ccc;
     background-position: center;
     position           : relative;
+    box-sizing         : border-box;
 }
 
 .name_h2 {
     text-align : center;
     color      : #fff;
     text-shadow: 2px 2px 3px #000;
+    box-sizing : border-box;
 }
 
 .name_h2>h2 {

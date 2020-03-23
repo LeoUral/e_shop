@@ -16,6 +16,8 @@ header {
   display: flex;
   -ms-flex-wrap: nowrap;
       flex-wrap: nowrap;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 .title_shop {
   width: 80%;
@@ -23,12 +25,16 @@ header {
   border: 1px solid #000;
   background-color: #a3c5db;
   color: #000;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 .head_js {
   width: 20%;
   padding: 10px;
   border: 1px solid #000;
   background-color: #81afda;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 .e_shop_js {
   width: 100%;
@@ -43,7 +49,38 @@ header {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
+/*Стили для блока корзины*/
+.block_basket {
+  width: 100%;
+  margin: 5px 0 0 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  border: 1px solid #000;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.basket_img {
+  image-rendering: auto;
+  width: 250px;
+  height: 300px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: #ccc;
+  background-position: center;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.content_basket {
+  width: 80%;
+  padding: 20px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+/*-----------------------------------------*/
 /* Стили для блока продукта */
 /*
 .product_box {
@@ -57,12 +94,14 @@ header {
     background-color   : #ccc;
     background-position: center;
     position           : relative;
+    box-sizing         : border-box;
 }
 
 .name_h2 {
     text-align : center;
     color      : #fff;
     text-shadow: 2px 2px 3px #000;
+    box-sizing : border-box;
 }
 
 .name_h2>h2 {

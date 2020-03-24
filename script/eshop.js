@@ -27,14 +27,14 @@ const productStyle = `
         margin: 5px 0 0 0;
     }
     
-    .price_bottom {
+    .price_botton {
         width     : 100%;
         position  : absolute;
         bottom    : 5px;
         text-align: center;
     }
     
-    .price_bottom span {
+    .price_botton span {
         font-size  : 24px;
         color      : #fff;
         text-shadow: 2px 2px 3px #000;
@@ -81,6 +81,7 @@ const styleBasket = `
 //данные 
 const allData = {
     dataProduct: [], //массив продукта
+    basket: [], //корзина
     product: '', // верстка продукта
     headBasket: '', //верстка корзиные в header
     countPrice: 0, // сумма покупки
@@ -88,7 +89,7 @@ const allData = {
     blockBasket: '' //верстка блока корзины
 };
 
-let basket = []; //корзина
+
 
 
 // const productAll = product + productStyle;
@@ -139,7 +140,7 @@ class View {
                 <div class="name_h2">
                     <h2> ${data[i].name} </h2>    
                 </div>
-                <div class="price_bottom">
+                <div class="price_botton">
                     <button class="add_product" data-id=${data[i].id}>+</button>
                     <span>${data[i].price}</span>        
                     <button class="remove_product" data-id=${data[i].id}>-</button>
@@ -152,12 +153,13 @@ class View {
 
     //формируем верстку блока корзины
     runViewBasket() {
-        for (let i = 0; i < basket.length; i++) {
-            if (basket[i].quantity > 0) {
-                this.joinBlockBasket(basket, i);//верстка выбранных товаров
+        for (let i = 0; i < allData.basket.length; i++) {
+            if (allData.basket[i].quantity > 0) {
+                this.joinBlockBasket(allData.basket, i);//верстка выбранных товаров
             }
         }
-        this.showOnScreen(allData.blockBasket, this.styleBasket);//вывод на экран
+        this.showOnScreen(allData.blockBasket, this.styleBasket);//вывод на экран       
+        control.getClickAdd('.basket_botton');
     }
 
     //верстка корзины, добавляем продукт
@@ -168,12 +170,12 @@ class View {
             </div>    
             <div class="content_basket">
                 <h1> ${data[i].name} </h1>
-                <div class="basket_bottom">
+                <div class="basket_botton">
                     <button class="add_product" data-id=${data[i].id}>+</button>
                     <span>${data[i].price}</span>        
                     <button class="remove_product" data-id=${data[i].id}>-</button>
                 </div>
-                <div class="quantity_basket">
+                <div class="quantity_basket" data-quantity=${data[i].id}>
                     Количество: ${data[i].quantity}
                 </div>
             </div>
@@ -190,8 +192,8 @@ class Control {
     }
 
     //смотрим нажатие кнопок + / -
-    getClickAdd() {
-        let btnAdd = document.querySelectorAll('.price_bottom');
+    getClickAdd(classButton) {
+        let btnAdd = document.querySelectorAll(classButton);//обертка в которой находятся кнопки + / -
         btnAdd.forEach(function (btn) {
             btn.addEventListener('click', function (event) {
                 let whatBtn = event.srcElement.dataset.id;//определение id продукта
@@ -218,7 +220,7 @@ class Control {
         } else if (btn === 'remove_product') {
             this.removeBasket(id);
         }
-        console.log(basket);
+        console.log(allData.basket);
         this.countProduct();
         this.getClickBasket();
 
@@ -226,21 +228,24 @@ class Control {
 
     //уменьшаем количество выбранного продукта
     removeBasket(id) {
-        if (basket[id].quantity > 0) {
-            --basket[id].quantity;
+        if (allData.basket[id].quantity > 0) {
+            --allData.basket[id].quantity;
         }
     }
 
     // увеличиваем количество выбранного продукта
     addBasket(id) {
-        ++basket[id].quantity;
+        ++allData.basket[id].quantity;
     }
 
     //создаем пустую корзину
     createBasket() {
+        if (allData.basket.length !== 0) {
+            return;
+        }
         for (let i = 0; i < model.data.length; i++) {
             let dataBasket = { id: i, name: model.data[i].name, urlImage: model.data[i].urlImage, price: model.data[i].price, quantity: 0 };
-            basket[i] = dataBasket;
+            allData.basket[i] = dataBasket;
         }
     }
 
@@ -248,16 +253,16 @@ class Control {
     countProduct() {
         allData.countQuantity = 0;
         allData.countPrice = 0;
-        for (let i = 0; i < basket.length; i++) {
-            allData.countQuantity = allData.countQuantity + basket[i].quantity;//количество
-            allData.countPrice = allData.countPrice + basket[i].quantity * basket[i].price;//стоимость итого
+        for (let i = 0; i < allData.basket.length; i++) {
+            allData.countQuantity = allData.countQuantity + allData.basket[i].quantity;//количество
+            allData.countPrice = allData.countPrice + allData.basket[i].quantity * allData.basket[i].price;//стоимость итого
         }
         view.joinBasket();//верстка
     }
 
     init() {
         this.createBasket();
-        this.getClickAdd();
+        this.getClickAdd('.price_botton');
     }
 }
 

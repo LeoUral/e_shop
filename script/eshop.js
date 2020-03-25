@@ -159,6 +159,7 @@ class View {
                 this.joinBlockBasket(allData.basket, i);//верстка выбранных товаров
             }
         }
+        allData.blockBasket = allData.blockBasket + ` <button class="btn_buy">Оформить заказ</button> `
         this.showOnScreen(allData.blockBasket, this.styleBasket);//вывод на экран       
         control.getClickAdd('.basket_botton');
     }

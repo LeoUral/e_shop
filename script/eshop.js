@@ -125,6 +125,7 @@ class View {
                 <div>Количество товара: ${allData.countQuantity} шт.</div>
                 <div>Выбранно на сумму: ${allData.countPrice} руб.</div>
                 <button class="btn_basket">Посмотреть покупки</button>
+                <button class="btn_buy">Оформить заказ</button>
             </div>
         `;
         allData.headBasket = dataBasket;

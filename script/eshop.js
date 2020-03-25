@@ -153,6 +153,7 @@ class View {
 
     //формируем верстку блока корзины
     runViewBasket() {
+        allData.blockBasket = '';//сбрасываем старую верстку
         for (let i = 0; i < allData.basket.length; i++) {
             if (allData.basket[i].quantity > 0) {
                 this.joinBlockBasket(allData.basket, i);//верстка выбранных товаров
@@ -175,12 +176,18 @@ class View {
                     <span>${data[i].price}</span>        
                     <button class="remove_product" data-id=${data[i].id}>-</button>
                 </div>
-                <div class="quantity_basket" data-quantity=${data[i].id}>
+                <div class="quantity_basket" id="${data[i].id}" data-quantity=${data[i].id}>
                     Количество: ${data[i].quantity}
                 </div>
             </div>
         </div>
         `;
+    }
+
+    //переписывает количество товара при вызове блока корзины
+    joinBlockQuantity(id) {
+        let quantity = document.getElementById(`${id}`);
+        quantity.innerHTML = `Количество: ` + allData.basket[id].quantity;
     }
 
 
@@ -200,6 +207,7 @@ class Control {
                 let btnClick = event.target.className;// определение нажатой кнопки
 
                 control.putBacket(whatBtn, btnClick);
+                if (classButton === '.basket_botton') view.joinBlockQuantity(whatBtn);// только в блоке корзины
             });
         });
     }
@@ -257,6 +265,7 @@ class Control {
             allData.countQuantity = allData.countQuantity + allData.basket[i].quantity;//количество
             allData.countPrice = allData.countPrice + allData.basket[i].quantity * allData.basket[i].price;//стоимость итого
         }
+
         view.joinBasket();//верстка
     }
 

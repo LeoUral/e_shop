@@ -1,0 +1,56 @@
+[{
+        "idDop": 0,
+        "dopName": "Упаковка букета",
+        "dopPrice": 200
+    },
+    {
+        "idDop": 1,
+        "dopName": " Кризал - подкормка для цветов",
+        "dopPrice": 20
+    },
+    {
+        "idDop": 2,
+        "dopName": "Открытка конверт",
+        "dopPrice": 30
+    },
+    {
+        "idDop": 3,
+        "dopName": "Открытка средняя",
+        "dopPrice": 40
+    },
+    {
+        "idDop": 4,
+        "dopName": "Открытка ручной работы",
+        "dopPrice": 150
+    },
+    {
+        "idDop": 5,
+        "dopName": "Открытка шоколадница",
+        "dopPrice": 210
+    },
+    {
+        "idDop": 6,
+        "dopName": "Игрушка",
+        "dopPrice": 500
+    },
+    {
+        "idDop": 7,
+        "dopName": "Игрушка",
+        "dopPrice": 800
+    },
+    {
+        "idDop": 8,
+        "dopName": "Игрушка",
+        "dopPrice": 1000
+    },
+    {
+        "idDop": 9,
+        "dopName": "Игрушка",
+        "dopPrice": 1500
+    },
+    {
+        "idDop": 10,
+        "dopName": "Топер",
+        "dopPrice": 50
+    }
+]

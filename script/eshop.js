@@ -1,5 +1,6 @@
 'use strict'
 
+
 const productStyle = `
     <style>
     .product_box {
@@ -78,6 +79,11 @@ const styleBasket = `
     </style>
 `;
 
+const styleDop = `
+    <style>
+    </style>
+`;
+
 //данные 
 const allData = {
     dataProduct: [], //массив продукта
@@ -86,7 +92,10 @@ const allData = {
     headBasket: '', //верстка корзиные в header
     countPrice: 0, // сумма покупки
     countQuantity: 0, //количество выбранного товара
-    blockBasket: '' //верстка блока корзины
+    blockBasket: '', //верстка блока корзины
+    dopProduct: [],//дополнительные товары
+    basketDop: [],//корзина дополнительного товара
+    dopBlock: '',//верстка доп товара
 };
 
 
@@ -125,7 +134,7 @@ class View {
                 <div>Количество товара: ${allData.countQuantity} шт.</div>
                 <div>Выбранно на сумму: ${allData.countPrice} руб.</div>
                 <button class="btn_basket">Посмотреть покупки</button>
-                <button class="btn_buy">Оформить заказ</button>
+                <button class="btn_buy" onclick="control.clickBtnBuy();" >Оформить заказ</button>
             </div>
         `;
         allData.headBasket = dataBasket;
@@ -160,7 +169,7 @@ class View {
                 this.joinBlockBasket(allData.basket, i);//верстка выбранных товаров
             }
         }
-        allData.blockBasket = allData.blockBasket + ` <button class="btn_buy">Оформить заказ</button> `
+        allData.blockBasket = allData.blockBasket + ` <button class="btn_buy" onclick="control.clickBtnBuy();">Оформить заказ</button> `
         this.showOnScreen(allData.blockBasket, this.styleBasket);//вывод на экран       
         control.getClickAdd('.basket_botton');
     }
@@ -192,6 +201,30 @@ class View {
         quantity.innerHTML = `Количество: ` + allData.basket[id].quantity;
     }
 
+    //формирование предожения по доп товару
+    runViewDopProduct() {
+        allData.dopBlock = '';
+        for (let i = 0; i < allData.dopProduct.length; i++) {
+            this.joinPlaceOrder(allData.dopProduct[i].idDop, allData.dopProduct[i].dopName, allData.dopProduct[i].dopPrice);
+        }
+        allData.dopBlock = `
+            <div class="block_dop">
+            <h3>Предлагаем сопутствующие товары:</h3>
+                <ul>
+                    ${allData.dopBlock}
+                </ul>
+                <button>Продолжить</button>
+            </div>
+        `;
+        this.showOnScreen(allData.dopBlock, styleDop);
+    }
+
+    //верстка доп товара, верстка <li>
+    joinPlaceOrder(id, name, price) {
+        allData.dopBlock = allData.dopBlock + `
+            <li class="checkbox"><input type="checkbox" class="check" id="${id}" value="${name}"><label for="${id}">${name},  цена: ${price} руб. </label><button>+</button><button>-</button> </li>
+        `;
+    }
 
 }
 
@@ -248,6 +281,11 @@ class Control {
         ++allData.basket[id].quantity;
     }
 
+    //click Оформить заказ
+    clickBtnBuy() {
+        view.runViewDopProduct();//верстка блока доп товара
+    }
+
     //создаем пустую корзину
     createBasket() {
         if (allData.basket.length !== 0) {
@@ -280,6 +318,7 @@ class Control {
 class Model {
     constructor() {
         this.data = [];
+        this.dataDop = [];
     }
 
     //запрос данных из JSON файла
@@ -298,8 +337,19 @@ class Model {
 
     }
 
+    async _requestDop() {
+        const urlServerDop = '../server/dop.json';
+
+        let response = await fetch(urlServerDop);
+        let jsonDop = await response.json();
+
+        this.dataDop = jsonDop;
+        allData.dopProduct = this.dataDop;
+    }
+
     init() {
         this._requestProduct();
+        this._requestDop();
     }
 }
 
@@ -309,4 +359,3 @@ const control = new Control();
 
 model.init();
 control.init();
-

@@ -52,6 +52,9 @@ header {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
 }
+.on_screen {
+  display: none;
+}
 /*Стиль для блока доп товара*/
 /*=======================================*/
 .block_dop {

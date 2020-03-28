@@ -93,8 +93,8 @@ const allData = {
     countPrice: 0, // сумма покупки
     countQuantity: 0, //количество выбранного товара
     blockBasket: '', //верстка блока корзины
-    dopProduct: [],//дополнительные товары
-    basketDop: [],//корзина дополнительного товара
+    dopProduct: [],//дополнительные товары все
+    basketDop: [],//корзина дополнительного товара    
     dopBlock: '',//верстка доп товара
 };
 
@@ -217,13 +217,47 @@ class View {
             </div>
         `;
         this.showOnScreen(allData.dopBlock, styleDop);
+        control.getClickDop();
     }
 
     //верстка доп товара, верстка <li>
     joinPlaceOrder(id, name, price) {
         allData.dopBlock = allData.dopBlock + `
-            <li class="checkbox"><input type="checkbox" class="check" id="${id}" value="${name}"><label for="${id}">${name},  цена: ${price} руб. </label><button>+</button><button>-</button> </li>
+            <li class="checkbox dop_btn">
+                <input type="checkbox" class="check_${id}" id="${id}" value="${name}">
+                    <label for="${id}">${name},  цена: 
+                        <span class="price_dop_${id}">${price}</span> руб. 
+                    </label>
+                        <span id="btn_count_${id}"></span> 
+            </li>
         `;
+    }
+
+    //добавляем кнопки в доп продукт при выборе
+    joinAddDopButton(id) {
+        let quantity = allData.basketDop[id].dopQuantity;
+        const blockButton = `
+            <button class="add_dop" data-id="${id}">+</button>
+                <span id="dop_quantity_${id}">${quantity} </span> шт.
+            <button class="remove_dop" data-id="${id}">-</button>
+        `;
+
+        let block = document.getElementById(`btn_count_${id}`);
+        block.innerHTML = blockButton;
+    }
+
+    //удаляем кнопки из доп продукта при отказе. РАБОТАЕТ С ОШИБКОЙ! отключен
+    joinRemoveDopButton(id) {
+        const blockNull = `<span>  </span>`;
+        let block = document.getElementById(`btn_count_${id}`);
+        console.log(`btn_count_${id}`);
+        block.innerHTML = blockNull;
+    }
+
+    //меняем количество выбранного продукта в верстке
+    replaceDopQuantity(id) {
+        let dopQuantity = document.getElementById(`dop_quantity_${id}`);
+        dopQuantity.innerHTML = allData.basketDop[id].dopQuantity;
     }
 
 }
@@ -231,6 +265,51 @@ class View {
 class Control {
     constructor() {
 
+    }
+    // отслеживает нажатие кнопок и чекбоксов в блоке - Доп товара, услуг
+    getClickDop() {
+        let btnDop = document.querySelectorAll('.dop_btn');
+        btnDop.forEach(function (btn) {
+            btn.addEventListener('click', function (event) {
+                let btnId = event.srcElement.dataset.id; // idDop
+                let idInput = event.target.id; // id тега input
+                let btnClass = event.target.className; //Класс btnDop, cheked
+                let btnChek = event.target.checked; // checked - true / false
+
+                if (btnChek) {
+                    allData.basketDop[idInput].dopQuantity = 1;
+                    allData.basketDop[idInput].checkedDop = true;
+                    view.joinAddDopButton(idInput);
+                }
+                // if (!btnChek) view.joinRemoveDopButton(idInput); // работает с ОШИБКОЙ. отключен
+
+                if (btnClass === 'add_dop') control.addDopBasket(btnId);//функция добавляет количество покупок
+                if (btnClass === 'remove_dop') control.removeDopBasket(btnId);//функция уменьшает количество покупок               
+            })
+        })
+    }
+
+    //добавляем одну шт доп товара
+    addDopBasket(id) {
+        ++allData.basketDop[id].dopQuantity;
+        view.replaceDopQuantity(id);
+        console.log(allData.basketDop[id].dopQuantity);
+    }
+
+    //убираем одну шт доп товара
+    removeDopBasket(id) {
+        if (allData.basketDop[id].dopQuantity > 1) --allData.basketDop[id].dopQuantity;
+        view.replaceDopQuantity(id);
+        console.log(allData.basketDop[id].dopQuantity);
+    }
+
+    //создаем корзину доп товара
+    burnDopBasket() {
+        if (allData.basketDop.length !== 0) return;
+        for (let i = 0; i < allData.dopProduct.length; i++) {
+            let modulBlock = { idDop: allData.dopProduct[i].idDop, dopName: allData.dopProduct[i].dopName, dopPrice: allData.dopProduct[i].dopPrice, dopQuantity: 0, checkedDop: false };
+            allData.basketDop[i] = modulBlock;
+        }
     }
 
     //смотрим нажатие кнопок + / -
@@ -283,6 +362,7 @@ class Control {
 
     //click Оформить заказ
     clickBtnBuy() {
+        this.burnDopBasket(); // создаем корзину доп товара
         view.runViewDopProduct();//верстка блока доп товара
     }
 

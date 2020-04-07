@@ -96,6 +96,7 @@ const allData = {
     dopProduct: [],//дополнительные товары все
     basketDop: [],//корзина дополнительного товара    
     dopBlock: '',//верстка доп товара
+    order: ''//верстка окончательного заказа
 };
 
 
@@ -213,7 +214,7 @@ class View {
                 <ul>
                     ${allData.dopBlock}
                 </ul>
-                <button>Продолжить</button>
+                <button onclick="control.placingOrder();">Продолжить</button>
             </div>
         `;
         this.showOnScreen(allData.dopBlock, styleDop);
@@ -246,7 +247,7 @@ class View {
         block.innerHTML = blockButton;
     }
 
-    //удаляем кнопки из доп продукта при отказе. РАБОТАЕТ С ОШИБКОЙ! отключен
+    //удаляем кнопки из доп продукта при отказе.
     joinRemoveDopButton(id) {
         const blockNull = `<span>  </span>`;
         let block = document.getElementById(`btn_count_${id}`);
@@ -260,12 +261,59 @@ class View {
         dopQuantity.innerHTML = allData.basketDop[id].dopQuantity;
     }
 
+    //верстка окончательного заказа
+    joinPlacingOrder() {
+        allData.order = '';
+        for (let i = 0; i < allData.basket.length; i++) {
+            if (allData.basket[i].quantity > 0) {
+                allData.order = allData.order + `<li><span>${allData.basket[i].name + ' (' + allData.basket[i].quantity + 'шт.), на сумму: ' + allData.basket[i].quantity * allData.basket[i].price + 'руб.'}</span></li>`;
+            }
+        }
+        for (let i = 0; i < allData.basketDop.length; i++) {
+            if (allData.basketDop[i].dopQuantity > 0) {
+                allData.order = allData.order + `<li><span>${allData.basketDop[i].dopName + ' (' + allData.basketDop[i].dopQuantity + 'шт.), на сумму: ' + allData.basketDop[i].dopQuantity * allData.basketDop[i].dopPrice + 'руб.'}</span></li>`;
+            }
+        }
+        allData.order = `<div>
+                        <h1>Ваш заказ:</h1>
+                        <ul>
+                            ${allData.order}
+                        </ul>
+                        <span>ИТОГО на сумму: ${allData.countPrice} руб.</span>
+                        <div>
+                            <button>Доставка</button>
+                            <button>Самовывоз</button>
+                            <button>Оплатить сейчас</button>
+                            <button>Оплатить при получении</button>
+                        </div>
+                    </div>`;
+        const styleOrder = '<style></style>';
+
+        this.showOnScreen(allData.order, styleOrder);//выводим в блок на экран
+    }
+
+
 }
 
 class Control {
     constructor() {
 
     }
+    // Оформляем весь заказ с допами в том числе
+    placingOrder() {
+        for (let i = 0; i < allData.basket.length; i++) {
+            if (allData.basket[i].quantity > 0) {
+                console.log(allData.basket[i].name + ' = ' + allData.basket[i].quantity + 'шт. на сумму: ' + allData.basket[i].quantity * allData.basket[i].price);
+            }
+        }
+        for (let i = 0; i < allData.basketDop.length; i++) {
+            if (allData.basketDop[i].dopQuantity > 0) {
+                console.log(allData.basketDop[i].dopName + ' = ' + allData.basketDop[i].dopQuantity + 'шт. на сумму: ' + allData.basketDop[i].dopQuantity * allData.basketDop[i].dopPrice);
+            }
+        }
+        view.joinPlacingOrder();
+    }
+
     // отслеживает нажатие кнопок и чекбоксов в блоке - Доп товара, услуг
     getClickDop() {
         let btnDop = document.querySelectorAll('.dop_btn');
@@ -276,12 +324,16 @@ class Control {
                 let btnClass = event.target.className; //Класс btnDop, cheked
                 let btnChek = event.target.checked; // checked - true / false
 
+                //добавляем кнопки при чеке
                 if (btnChek) {
-                    allData.basketDop[idInput].dopQuantity = 1;
+                    allData.basketDop[idInput].dopQuantity = 0;
                     allData.basketDop[idInput].checkedDop = true;
                     view.joinAddDopButton(idInput);
                 }
-                // if (!btnChek) view.joinRemoveDopButton(idInput); // работает с ОШИБКОЙ. отключен
+                //убираем кнопки при чеке
+                if (btnChek === false) {
+                    view.joinRemoveDopButton(idInput);
+                }
 
                 if (btnClass === 'add_dop') control.addDopBasket(btnId);//функция добавляет количество покупок
                 if (btnClass === 'remove_dop') control.removeDopBasket(btnId);//функция уменьшает количество покупок               
@@ -293,14 +345,18 @@ class Control {
     addDopBasket(id) {
         ++allData.basketDop[id].dopQuantity;
         view.replaceDopQuantity(id);
-        console.log(allData.basketDop[id].dopQuantity);
+        console.log(allData.basketDop[id].dopName + " = " + allData.basketDop[id].dopQuantity);
+        control.countAddDopProduct(id); //добавляем стоимость и количество
     }
 
     //убираем одну шт доп товара
     removeDopBasket(id) {
-        if (allData.basketDop[id].dopQuantity > 1) --allData.basketDop[id].dopQuantity;
+        if (allData.basketDop[id].dopQuantity > 0) {
+            --allData.basketDop[id].dopQuantity;
+            control.countRemoveDopProduct(id);//вычитаем стоимость и количество
+        }
         view.replaceDopQuantity(id);
-        console.log(allData.basketDop[id].dopQuantity);
+        console.log(allData.basketDop[id].dopName + " = " + allData.basketDop[id].dopQuantity);
     }
 
     //создаем корзину доп товара
@@ -375,6 +431,18 @@ class Control {
             let dataBasket = { id: i, name: model.data[i].name, urlImage: model.data[i].urlImage, price: model.data[i].price, quantity: 0 };
             allData.basket[i] = dataBasket;
         }
+    }
+    //добавляем ДОП товар в общий счетчик (количество, сумма) корзины
+    countAddDopProduct(id) {
+        allData.countQuantity = allData.countQuantity + 1;
+        allData.countPrice = allData.countPrice + allData.basketDop[id].dopPrice;
+        view.joinBasket();//верстка
+    }
+    //убираем ДОП товар в общий счетчик (количество, сумма) корзины
+    countRemoveDopProduct(id) {
+        allData.countQuantity = allData.countQuantity - 1;
+        allData.countPrice = allData.countPrice - allData.basketDop[id].dopPrice;
+        view.joinBasket();//верстка
     }
 
     //подсчет количества выбранного товара и стоимости для корзины
